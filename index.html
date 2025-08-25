@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Romantico 💖</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #ffe6f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+  }
+  h1 {
+    color: #ff4d6d;
+  }
+  #game {
+    display: grid;
+    grid-template-columns: repeat(4, 80px);
+    grid-gap: 15px;
+    margin-top: 20px;
+  }
+  .card {
+    width: 80px;
+    height: 80px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+  }
+  .card.flipped {
+    background: #ffd6e0;
+  }
+  #message {
+    margin-top: 30px;
+    font-size: 24px;
+    color: #ff1a75;
+    text-align: center;
+  }
+  #startBtn {
+    padding: 10px 20px;
+    font-size: 18px;
+    background: #ff4d6d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  #startBtn:hover {
+    background: #ff1a75;
+  }
+</style>
+</head>
+<body>
+
+<h1>Memory dell'Amore 💖</h1>
+<button id="startBtn">Inizia il Gioco</button>
+<div id="game"></div>
+<div id="message"></div>
+
+<script>
+const cardsArray = ['💖','💋','😍','🥰','💌','💑','😘','💗'];
+let gameCards = [];
+let flipped = [];
+let matched = [];
+let gameStarted = false;
+
+const gameDiv = document.getElementById('game');
+const messageDiv = document.getElementById('message');
+const startBtn = document.getElementById('startBtn');
+
+function startGame() {
+    gameDiv.innerHTML = '';
+    messageDiv.innerHTML = '';
+    flipped = [];
+    matched = [];
+    gameCards = [...cardsArray, ...cardsArray]; // doppie carte
+    shuffle(gameCards);
+    gameCards.forEach((emoji, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.emoji = emoji;
+        card.dataset.index = index;
+        card.innerHTML = '';
+        card.addEventListener('click', flipCard);
+        gameDiv.appendChild(card);
+    });
+    gameStarted = true;
+}
+
+function shuffle(array) {
+    for(let i = array.length -1; i>0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function flipCard() {
+    if(!gameStarted) return;
+    if(flipped.length === 2 || this.classList.contains('flipped') || matched.includes(this.dataset.index)) return;
+    
+    this.classList.add('flipped');
+    this.innerHTML = this.dataset.emoji;
+    flipped.push(this);
+
+    if(flipped.length === 2){
+        if(flipped[0].dataset.emoji === flipped[1].dataset.emoji){
+            matched.push(flipped[0].dataset.index, flipped[1].dataset.index);
+            flipped = [];
+            if(matched.length === gameCards.length){
+                showMessage();
+            }
+        } else {
+            setTimeout(() => {
+                flipped[0].classList.remove('flipped');
+                flipped[0].innerHTML = '';
+                flipped[1].classList.remove('flipped');
+                flipped[1].innerHTML = '';
+                flipped = [];
+            }, 800);
+        }
+    }
+}
+
+function showMessage() {
+    messageDiv.innerHTML = "Hai completato il gioco! 💖<br>Sei speciale! 😘";
+}
+
+startBtn.addEventListener('click', startGame);
+</script>
+
+</body>
+</html>
