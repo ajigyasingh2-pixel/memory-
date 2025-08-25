@@ -26,7 +26,7 @@
   .card {
     width: 80px;
     height: 80px;
-    perspective: 1000px; /* per flip 3D */
+    perspective: 1000px;
   }
   .card-inner {
     position: relative;
@@ -178,7 +178,11 @@ function flipCard() {
 
 function showMessage() {
     const randomIndex = Math.floor(Math.random() * messages.length);
-    messageDiv.innerHTML = messages[randomIndex];
+    messageDiv.innerHTML = `
+      ${messages[randomIndex]}<br>
+      💖💖💖<br>
+      <img src="https://i.ibb.co/3y0V2Gz/heart.gif" width="100" alt="cuore">
+    `;
     messageDiv.classList.add('show');
 }
 
